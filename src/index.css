@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  /* Turquoise core — anchored exactly on the #069494 brand accent at 700 */
+  --color-teal-950: #023838;
+  --color-teal-900: #035656;
+  --color-teal-800: #057676;
+  --color-teal-700: #069494;
+  --color-teal-600: #29a3a3;
+  --color-teal-500: #51b4b4;
+  --color-teal-400: #79c5c5;
+  --color-teal-300: #a0d6d6;
+  --color-teal-200: #c3e5e5;
+  --color-teal-100: #e1f2f2;
+  --color-teal-50: #f3fafa;
+
+  /* Soft pastel highlights — used sparingly as accents, chips, glows */
+  --color-blush: #f7cfc6;
+  --color-blush-deep: #efada0;
+  --color-butter: #f7e6b4;
+  --color-lilac: #ddd3f2;
+  --color-sky: #cdeaf3;
+
+  /* Neutral paper background, cool airy off-white */
+  --color-paper: #f6fbfc;
+  --color-ink: #0b2731;
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-ui {
+    font-family: var(--font-ui);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
