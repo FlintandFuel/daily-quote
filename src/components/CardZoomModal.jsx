@@ -6,19 +6,18 @@ export default function CardZoomModal({ open, card, settings, fontItalic, fontBo
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-teal-950/80 p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-teal-950/85 p-6"
       onClick={onClose}
     >
       <button
         onClick={onClose}
         aria-label="Close preview"
-        style={{ top: "calc(env(safe-area-inset-top) + 20px)" }}
-        className="absolute right-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm hover:bg-white/25"
+        className="absolute right-5 top-[calc(env(safe-area-inset-top)+16px)] z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-teal-900 shadow-lg"
       >
-        <X className="h-5 w-5" strokeWidth={1.75} />
+        <X className="h-5 w-5" strokeWidth={2} />
       </button>
 
-      <div className="w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+      <div className="h-[70svh] w-fit" onClick={(e) => e.stopPropagation()}>
         <CardCanvas
           imageUrl={card.imageUrl}
           quoteText={card.quoteText}
@@ -31,7 +30,7 @@ export default function CardZoomModal({ open, card, settings, fontItalic, fontBo
           fontItalic={fontItalic}
           fontBold={fontBold}
           fontSizeId={card.fontSizeId ?? "medium"}
-          className="mx-auto aspect-9/16 w-full"
+          className="aspect-9/16 h-full w-auto max-w-full"
         />
       </div>
     </div>

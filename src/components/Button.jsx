@@ -7,8 +7,14 @@ const VARIANTS = {
   pastel: "bg-lilac text-teal-900 hover:brightness-95 active:brightness-90",
 };
 
+const SIZES = {
+  md: "px-5 py-3.5 text-[15px]",
+  sm: "px-3 py-2 text-sm",
+};
+
 export default function Button({
   variant = "primary",
+  size = "md",
   className = "",
   disabled,
   children,
@@ -17,7 +23,7 @@ export default function Button({
   return (
     <button
       disabled={disabled}
-      className={`font-ui inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-[15px] font-semibold tracking-tight transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${className}`}
+      className={`font-ui inline-flex items-center justify-center gap-2 rounded-2xl font-semibold tracking-tight transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${className}`}
       {...props}
     >
       {children}

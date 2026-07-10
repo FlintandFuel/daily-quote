@@ -139,7 +139,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-scroll mx-auto h-dvh w-full max-w-md overflow-y-auto bg-paper">
+    <div className="app-scroll mx-auto h-svh w-full max-w-md overflow-y-auto bg-paper">
       {card === undefined ? (
         <div className="flex h-full items-center justify-center">
           <div className="h-2 w-2 animate-pulse rounded-full bg-teal-400" />

@@ -60,7 +60,7 @@ export default function CardPreviewScreen({
   const currentFont = getQuoteFont(card.fontFamily ?? "fraunces");
 
   return (
-    <div className="flex min-h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+32px)] pb-10 safe-bottom">
+    <div className="flex min-h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+60px)] pb-10 safe-bottom">
       <div className="flex items-center justify-between gap-3">
         <button
           onClick={onBack}
@@ -82,15 +82,15 @@ export default function CardPreviewScreen({
         </button>
       </div>
 
-      <div className="mt-6">
-        <div
-          role="button"
-          tabIndex={0}
-          aria-label="View full-size preview"
-          onClick={() => setZoomOpen(true)}
-          onKeyDown={(e) => e.key === "Enter" && setZoomOpen(true)}
-          className="mx-auto w-fit cursor-pointer"
-        >
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="View full-size preview"
+        onClick={() => setZoomOpen(true)}
+        onKeyDown={(e) => e.key === "Enter" && setZoomOpen(true)}
+        className="mt-6 cursor-pointer"
+      >
+        <div className="mx-auto h-[46svh] w-fit">
           <CardCanvas
             ref={canvasRef}
             imageUrl={card.imageUrl}
@@ -104,29 +104,31 @@ export default function CardPreviewScreen({
             fontItalic={isItalic}
             fontBold={isBold}
             fontSizeId={card.fontSizeId ?? "medium"}
-            className="mx-auto aspect-9/16 h-[48dvh] max-w-full"
+            className="aspect-9/16 h-full w-auto max-w-full"
           />
-          <p className="mt-2 flex items-center justify-center gap-1 text-xs font-medium text-teal-600">
-            <Maximize2 className="h-3 w-3" strokeWidth={2} />
-            Tap to view full size
-          </p>
         </div>
+        <p className="mt-4 flex items-center justify-center gap-1 text-xs font-medium text-teal-600">
+          <Maximize2 className="h-3 w-3" strokeWidth={2} />
+          Tap to view full size
+        </p>
       </div>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-6 space-y-2.5">
         <Button
           variant="primary"
-          className="w-full py-4 text-base"
+          size="sm"
+          className="w-full"
           onClick={handleDownload}
           disabled={downloading || busy}
         >
           {downloading ? "Preparing…" : "Download"}
         </Button>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2.5">
           <Button
             variant="outline"
-            className="flex-1 text-sm"
+            size="sm"
+            className="flex-[2]"
             onClick={() => setCustomizeOpen((v) => !v)}
             disabled={busy}
           >
@@ -135,7 +137,8 @@ export default function CardPreviewScreen({
           {card.source === "ai" && (
             <Button
               variant="outline"
-              className="flex-1 text-sm"
+              size="sm"
+              className="flex-[3] whitespace-nowrap"
               onClick={onRegenerateQuote}
               disabled={busy}
             >
