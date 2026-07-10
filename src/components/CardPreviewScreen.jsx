@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
+import { ArrowLeft, Settings, Maximize2 } from "lucide-react";
 import Button from "./Button";
 import Chip from "./Chip";
 import CardCanvas from "./CardCanvas";
+import CardZoomModal from "./CardZoomModal";
 import { CATEGORIES } from "../lib/imageSearch";
 import { QUOTE_FONTS, FONT_SIZES, getQuoteFont } from "../lib/quoteFonts";
 
@@ -36,6 +38,7 @@ export default function CardPreviewScreen({
   const canvasRef = useRef(null);
   const [customizeOpen, setCustomizeOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
 
   async function handleDownload() {
     setDownloading(true);
@@ -57,14 +60,14 @@ export default function CardPreviewScreen({
   const currentFont = getQuoteFont(card.fontFamily ?? "fraunces");
 
   return (
-    <div className="flex min-h-dvh flex-col px-6 pt-6 pb-10 safe-top safe-bottom">
+    <div className="flex min-h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+32px)] pb-10 safe-bottom">
       <div className="flex items-center justify-between gap-3">
         <button
           onClick={onBack}
           aria-label="Start a new card"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-teal-700 shadow-sm hover:bg-teal-50"
         >
-          ←
+          <ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </button>
         <div className="min-w-0 flex-1 text-center">
           <p className="text-sm font-medium text-teal-500">{formatDate()}</p>
@@ -75,25 +78,39 @@ export default function CardPreviewScreen({
           aria-label="Settings"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-teal-700 shadow-sm hover:bg-teal-50"
         >
-          ⚙️
+          <Settings className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </button>
       </div>
 
       <div className="mt-6">
-        <CardCanvas
-          ref={canvasRef}
-          imageUrl={card.imageUrl}
-          quoteText={card.quoteText}
-          brandName={settings.brandName}
-          showBrandName={settings.showBrandName}
-          logoUrl={settings.logoUrl}
-          showLogo={settings.showLogo}
-          textPosition={card.textPosition ?? "bottom"}
-          fontFamily={card.fontFamily ?? "fraunces"}
-          fontItalic={isItalic}
-          fontBold={isBold}
-          fontSizeId={card.fontSizeId ?? "medium"}
-        />
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="View full-size preview"
+          onClick={() => setZoomOpen(true)}
+          onKeyDown={(e) => e.key === "Enter" && setZoomOpen(true)}
+          className="mx-auto w-fit cursor-pointer"
+        >
+          <CardCanvas
+            ref={canvasRef}
+            imageUrl={card.imageUrl}
+            quoteText={card.quoteText}
+            brandName={settings.brandName}
+            showBrandName={settings.showBrandName}
+            logoUrl={settings.logoUrl}
+            showLogo={settings.showLogo}
+            textPosition={card.textPosition ?? "bottom"}
+            fontFamily={card.fontFamily ?? "fraunces"}
+            fontItalic={isItalic}
+            fontBold={isBold}
+            fontSizeId={card.fontSizeId ?? "medium"}
+            className="mx-auto aspect-9/16 h-[48dvh] max-w-full"
+          />
+          <p className="mt-2 flex items-center justify-center gap-1 text-xs font-medium text-teal-600">
+            <Maximize2 className="h-3 w-3" strokeWidth={2} />
+            Tap to view full size
+          </p>
+        </div>
       </div>
 
       <div className="mt-6 space-y-3">
@@ -233,6 +250,15 @@ export default function CardPreviewScreen({
           </div>
         </div>
       )}
+
+      <CardZoomModal
+        open={zoomOpen}
+        card={card}
+        settings={settings}
+        fontItalic={isItalic}
+        fontBold={isBold}
+        onClose={() => setZoomOpen(false)}
+      />
     </div>
   );
 }

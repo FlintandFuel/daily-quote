@@ -54,6 +54,7 @@ const CardCanvas = forwardRef(function CardCanvas(
     fontBold = true,
     fontSizeId = "medium",
     onStatusChange,
+    className = "aspect-9/16 w-full",
   },
   ref
 ) {
@@ -179,7 +180,7 @@ const CardCanvas = forwardRef(function CardCanvas(
   }));
 
   return (
-    <div className="relative aspect-9/16 w-full overflow-hidden rounded-[2rem] bg-teal-100 shadow-xl shadow-teal-900/15">
+    <div className={`relative overflow-hidden rounded-[2rem] bg-teal-100 shadow-xl shadow-teal-900/15 ${className}`}>
       <canvas ref={canvasRef} width={W} height={H} className="h-full w-full object-cover" />
       {!ready && (
         <div className="absolute inset-0 flex items-center justify-center bg-teal-50">

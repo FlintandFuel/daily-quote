@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PenLine, Sparkles } from "lucide-react";
 import Button from "./Button";
 
 function greeting() {
@@ -14,16 +15,21 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
   const [topic, setTopic] = useState("");
 
   return (
-    <div className="flex min-h-dvh flex-col px-6 pt-14 pb-10 safe-top safe-bottom">
-      <p className="text-sm font-medium text-teal-500">{greeting()}</p>
-      <h1 className="mt-2 font-display text-3xl leading-tight text-teal-950 italic">
-        Today's card isn't ready yet.
-      </h1>
-      <p className="mt-3 text-[15px] text-teal-700/80">
-        Write today's quote yourself, or let it be written for you.
-      </p>
+    <div className="flex min-h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+180px)] pb-10 safe-bottom">
+      <div className="animate-fade-in-up">
+        <p className="text-sm font-medium text-teal-500">{greeting()}</p>
+        <h1 className="mt-2 font-display text-3xl leading-tight text-teal-950 italic">
+          Today's card isn't ready yet.
+        </h1>
+        <p className="mt-3 text-[15px] text-teal-700/80">
+          Write today's quote yourself, or let it be written for you.
+        </p>
+      </div>
 
-      <div className="mt-10 flex flex-1 flex-col gap-4">
+      <div
+        className="animate-fade-in-up mt-10 flex flex-1 flex-col gap-4"
+        style={{ animationDelay: "0.1s" }}
+      >
         <div
           role="button"
           tabIndex={0}
@@ -36,8 +42,8 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
           }`}
         >
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blush text-lg">
-              ✍️
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blush">
+              <PenLine className="h-5 w-5 text-teal-900" strokeWidth={1.75} />
             </span>
             <div>
               <p className="font-semibold text-teal-950">Write my own</p>
@@ -51,6 +57,7 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
                 autoFocus
                 value={text}
                 onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
                 placeholder="Type today's quote..."
                 rows={4}
                 className="w-full resize-none rounded-2xl border border-teal-200 bg-paper p-4 text-[15px] text-teal-950 placeholder:text-teal-700/40 focus:border-teal-500 focus:outline-none"
@@ -79,8 +86,8 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
           }`}
         >
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-lilac text-lg">
-              ✨
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-lilac">
+              <Sparkles className="h-5 w-5 text-teal-900" strokeWidth={1.75} />
             </span>
             <div>
               <p className="font-semibold text-teal-950">Get a quote for me</p>
@@ -94,6 +101,13 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
                 autoFocus
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                  if (e.key === "Enter" && !generating) {
+                    e.preventDefault();
+                    onGenerate(topic.trim());
+                  }
+                }}
                 placeholder="e.g. boundaries, burnout — or leave blank"
                 className="w-full rounded-2xl border border-teal-200 bg-paper p-4 text-[15px] text-teal-950 placeholder:text-teal-700/40 focus:border-teal-500 focus:outline-none"
               />
