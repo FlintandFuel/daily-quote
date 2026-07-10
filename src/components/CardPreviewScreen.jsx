@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Settings, Maximize2 } from "lucide-react";
 import Button from "./Button";
 import Chip from "./Chip";
@@ -36,9 +36,16 @@ export default function CardPreviewScreen({
   busy,
 }) {
   const canvasRef = useRef(null);
+  const customizePanelRef = useRef(null);
   const [customizeOpen, setCustomizeOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+
+  useEffect(() => {
+    if (customizeOpen) {
+      customizePanelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [customizeOpen]);
 
   async function handleDownload() {
     setDownloading(true);
@@ -103,7 +110,7 @@ export default function CardPreviewScreen({
           fontItalic={isItalic}
           fontBold={isBold}
           fontSizeId={card.fontSizeId ?? "medium"}
-          className="aspect-9/16 w-full"
+          className="mx-auto aspect-9/16 w-[82%]"
         />
         <p className="mt-4 flex items-center justify-center gap-1 text-xs font-medium text-teal-600">
           <Maximize2 className="h-3 w-3" strokeWidth={2} />
@@ -147,7 +154,7 @@ export default function CardPreviewScreen({
       </div>
 
       {customizeOpen && (
-        <div className="mt-5 space-y-5 rounded-3xl border border-teal-100 bg-white p-4">
+        <div ref={customizePanelRef} className="mt-5 space-y-5 rounded-3xl border border-teal-100 bg-white p-4">
           <div>
             <p className="mb-3 text-sm font-semibold text-teal-800">Background</p>
             <div className="flex flex-wrap gap-2">
