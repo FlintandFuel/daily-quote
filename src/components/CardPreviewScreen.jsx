@@ -90,23 +90,21 @@ export default function CardPreviewScreen({
         onKeyDown={(e) => e.key === "Enter" && setZoomOpen(true)}
         className="mt-6 cursor-pointer"
       >
-        <div className="mx-auto h-[46svh] w-fit">
-          <CardCanvas
-            ref={canvasRef}
-            imageUrl={card.imageUrl}
-            quoteText={card.quoteText}
-            brandName={settings.brandName}
-            showBrandName={settings.showBrandName}
-            logoUrl={settings.logoUrl}
-            showLogo={settings.showLogo}
-            textPosition={card.textPosition ?? "bottom"}
-            fontFamily={card.fontFamily ?? "fraunces"}
-            fontItalic={isItalic}
-            fontBold={isBold}
-            fontSizeId={card.fontSizeId ?? "medium"}
-            className="aspect-9/16 h-full w-auto max-w-full"
-          />
-        </div>
+        <CardCanvas
+          ref={canvasRef}
+          imageUrl={card.imageUrl}
+          quoteText={card.quoteText}
+          brandName={settings.brandName}
+          showBrandName={settings.showBrandName}
+          logoUrl={settings.logoUrl}
+          showLogo={settings.showLogo}
+          textPosition={card.textPosition ?? "bottom"}
+          fontFamily={card.fontFamily ?? "fraunces"}
+          fontItalic={isItalic}
+          fontBold={isBold}
+          fontSizeId={card.fontSizeId ?? "medium"}
+          className="aspect-9/16 w-full"
+        />
         <p className="mt-4 flex items-center justify-center gap-1 text-xs font-medium text-teal-600">
           <Maximize2 className="h-3 w-3" strokeWidth={2} />
           Tap to view full size
@@ -132,7 +130,7 @@ export default function CardPreviewScreen({
             onClick={() => setCustomizeOpen((v) => !v)}
             disabled={busy}
           >
-            Customize
+            Customise
           </Button>
           {card.source === "ai" && (
             <Button

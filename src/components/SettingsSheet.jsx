@@ -97,8 +97,8 @@ function Toggle({ checked, onChange, disabled }) {
       }`}
     >
       <span
-        className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-          checked ? "translate-x-6" : "translate-x-1"
+        className={`absolute top-1 left-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
+          checked ? "translate-x-5" : "translate-x-0"
         }`}
       />
     </button>
