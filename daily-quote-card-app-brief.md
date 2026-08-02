@@ -31,7 +31,7 @@ No login screen, no dashboard, no settings menu buried in tabs.
 ## 3. Data Model (Firestore)
 
 **`quotes` collection** — history log (not a queue; every quote used is recorded here, mainly so generated quotes don't repeat and she can look back at what she's posted)
-- `id`, `text`, `source` ("client" | "ai"), `topic` (optional string, e.g. "boundaries"), `dateUsed`
+- `id`, `text`, `source` ("client" | "ai"), `topic` (optional string, e.g. "boundaries"), `length` ("short" | "medium" | "long", optional — set for AI-generated quotes only), `dateUsed`
 
 **`dailyCards` collection** — log of what's been generated
 - `date` (YYYY-MM-DD), `quoteId`, `imageKeyword`, `imageUrl`, `createdAt`
@@ -50,7 +50,12 @@ No login screen, no dashboard, no settings menu buried in tabs.
 2. **If exists:** load and display that card immediately.
 3. **If not,** present the choice:
    - **"Write my own quote"** — a text box, she types it directly, done.
-   - **"Get a quote for me"** — an optional topic field (e.g. "boundaries," "burnout," "people-pleasing"). Calls the LLM API with a prompt that explicitly instructs it to avoid generic/cliché wisdom-quote phrasing, write in a grounded psychologist's voice, and address the given topic specifically if one was entered. Checks against the `quotes` history log to avoid repeating recent phrasing/themes.
+   - **"Get a quote for me"** — an optional topic field (e.g. "boundaries," "burnout," "people-pleasing") plus a length selector (Short / Medium / Long, default Short — see §4a). Calls the LLM API with a prompt that checks topic relevance *before* originality (the quote must clearly and specifically reflect the given topic, not just loosely relate to it), avoids generic/cliché wisdom-quote phrasing, writes in a grounded psychologist's voice, and falls back to a general non-cliché reflective quote if no topic was entered. The selected length's word/line target is passed into the prompt so the LLM writes to it directly, rather than truncating/padding after the fact. Checks against the `quotes` history log to avoid repeating recent phrasing/themes.
+
+### 4a. Length definitions
+- **Short:** 1 line, ~6–10 words
+- **Medium:** 2 lines, ~12–18 words
+- **Long:** 3 lines, ~20–28 words
 4. Once the quote is set (either way):
    - Extract 1–2 mood/theme keywords from the quote to drive image search — **unless** she's manually picked a category via the toggle (see below).
    - Search Unsplash/Pexels for a matching vertical-orientation stock image.
@@ -68,7 +73,7 @@ No login screen, no dashboard, no settings menu buried in tabs.
 **Step 1 — Quote choice** (shown only when today's card doesn't exist yet):
 - Two large buttons: **"Write my own"** / **"Get a quote for me"**
 - If "Write my own": a plain text box + "Continue"
-- If "Get a quote for me": an optional topic field (placeholder text like "e.g. boundaries, burnout — or leave blank") + "Generate"
+- If "Get a quote for me": an optional topic field (placeholder text like "e.g. boundaries, burnout — or leave blank") + a length selector (Short / Medium / Long, default Short) + "Generate"
 
 **Step 2 — Card preview:**
 - Full-bleed preview of the card (image + quote rendered together)
