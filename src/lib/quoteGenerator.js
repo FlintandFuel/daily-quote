@@ -57,7 +57,8 @@ const POOLS = {
     "Guilt isn't proof that you did something wrong. Sometimes it's proof that you did something new.",
     "The people who respect your boundaries were never the ones testing them.",
     "Boundaries aren't punishment.",
-    "A boundary held once is a rule. Held every time it's tested, it's actually yours — not just something you said once and hoped would stick.",
+    "Boundaries protect your peace, not your ego.",
+    "A boundary isn't a punishment. It's not a wall either. It's just the line where your yes actually means something.",
   ],
   burnout: [
     "Burnout isn't a productivity problem. It's a body that's been ignored for too long.",
@@ -66,7 +67,8 @@ const POOLS = {
     "The exhaustion isn't in your head. It's in your calendar.",
     "Recovery doesn't start with a holiday. It starts with saying the truth out loud.",
     "Rest isn't the reward.",
-    "Burnout doesn't announce itself. It just quietly removes one thing you loved at a time, until the calendar's full and none of it is joy anymore.",
+    "Burnout is a warning, not a weakness.",
+    "Burnout isn't laziness, and it isn't a personal failing either. It's not a phase you push through. It's your body finally refusing to keep running on empty.",
   ],
   "self-worth": [
     "Your worth was never up for a performance review.",
@@ -75,7 +77,7 @@ const POOLS = {
     "You're allowed to outgrow the version of yourself other people found convenient.",
     "Self-worth isn't built by proving something. It's built by no longer needing to.",
     "You are not a draft.",
-    "Self-worth isn't loud, and it isn't a mood. It's the quiet thing that stays intact whether or not the room happens to notice you.",
+    "Self-worth isn't loud. It doesn't need an audience. It's the quiet thing that holds steady whether or not the room is watching.",
   ],
   "people-pleasing": [
     "Being liked by everyone isn't a personality trait. It's a survival strategy, and it's costing you something.",
@@ -84,7 +86,7 @@ const POOLS = {
     "Disappointing someone isn't the same as hurting them.",
     "Peace was never meant to cost you yourself.",
     "Their comfort isn't your job.",
-    "People-pleasing feels like kindness from the inside, but it's really a quiet bet that your needs are the ones allowed to lose.",
+    "Being easy to get along with isn't a flaw. But it isn't the whole job either. Somewhere in there, your own needs still count.",
   ],
   grief: [
     "Grief doesn't ask permission to show up on an ordinary Tuesday.",
@@ -92,7 +94,7 @@ const POOLS = {
     "There's no finish line to healing, just a life that makes a little more room to breathe in.",
     "Missing someone isn't a setback in your healing. It's proof of what mattered.",
     "Grief is love with nowhere left to go.",
-    "Grief doesn't shrink on a schedule. It just learns, slowly, to share the room with a life that keeps moving anyway.",
+    "Grief doesn't move in a straight line. Some days it's quiet. Other days it shows up uninvited and asks to be felt again.",
   ],
   anxiety: [
     "Anxiety isn't a weakness. It's a nervous system that learned to expect the worst, early and often.",
@@ -100,7 +102,8 @@ const POOLS = {
     "Calm isn't the absence of fear. It's choosing to move anyway.",
     "The racing thoughts are loud because they think they're protecting you. They're just out of date.",
     "Your body isn't overreacting.",
-    "Anxiety isn't proof something's wrong with you. It's an old alarm system, still shouting about a danger that left the room a long time ago.",
+    "Anxiety lies about how much danger you're in.",
+    "Anxiety isn't weakness. It's a nervous system stuck on high alert. It's loud because it's trying to protect you from a danger that already passed.",
   ],
   general: [
     "Healing is rarely a straight line, and it was never supposed to be.",
@@ -109,7 +112,7 @@ const POOLS = {
     "Not every hard season means something is wrong with you.",
     "The bravest thing, some days, is just staying soft.",
     "Progress isn't loud.",
-    "Not every season needs a lesson attached to it. Some of them just need to be survived, quietly, without turning it into a story yet.",
+    "Not every season needs a lesson. Some of them just need surviving. The meaning, if there is any, can come later.",
   ],
 };
 
@@ -132,15 +135,33 @@ function wordCount(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+function sentenceCount(text) {
+  return text.split(/[.!?]+/).filter((s) => s.trim()).length;
+}
+
+function inWordRange(q, preset) {
+  const wc = wordCount(q);
+  return wc >= preset.wordsMin && wc <= preset.wordsMax;
+}
+
 // Best-effort stand-in for "write directly to the target length": picks the
-// curated-bank candidate closest to the preset's word-count range, rather
-// than truncating/padding a chosen quote after the fact.
+// curated-bank candidate matching the preset's line count first (short quotes
+// read as 1 line, long as 3), then narrows by word count, relaxing each
+// constraint in turn rather than truncating/padding a chosen quote after the
+// fact. Matching on line count alone isn't enough — see the "long" bug this
+// fixed: every quote in the word range happened to be 2 sentences, so "long"
+// read identically to "medium".
 function pickByLength(candidates, preset) {
-  const inRange = candidates.filter((q) => {
-    const wc = wordCount(q);
-    return wc >= preset.wordsMin && wc <= preset.wordsMax;
-  });
-  if (inRange.length) return inRange[Math.floor(Math.random() * inRange.length)];
+  const byLineAndWords = candidates.filter(
+    (q) => sentenceCount(q) === preset.lines && inWordRange(q, preset)
+  );
+  if (byLineAndWords.length) return byLineAndWords[Math.floor(Math.random() * byLineAndWords.length)];
+
+  const byLine = candidates.filter((q) => sentenceCount(q) === preset.lines);
+  if (byLine.length) return byLine[Math.floor(Math.random() * byLine.length)];
+
+  const byWords = candidates.filter((q) => inWordRange(q, preset));
+  if (byWords.length) return byWords[Math.floor(Math.random() * byWords.length)];
 
   const mid = (preset.wordsMin + preset.wordsMax) / 2;
   let bestDistance = Infinity;
