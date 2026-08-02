@@ -28,15 +28,21 @@ export default function App() {
     setCard(getDailyCard());
   }, []);
 
-  async function buildCard({ text, source, topic }, categoryId = categoryOverride) {
+  async function buildCard({ text, source, topic, length }, categoryId = categoryOverride) {
     const keyword = extractKeyword(text);
     const { url, keyword: usedKeyword } = await searchImage({ keyword, categoryId });
-    const quoteRecord = addQuoteToHistory({ text, source, topic: topic || null });
+    const quoteRecord = addQuoteToHistory({
+      text,
+      source,
+      topic: topic || null,
+      length: length || null,
+    });
     const saved = saveDailyCard({
       quoteId: quoteRecord.id,
       quoteText: text,
       source,
       topic: topic || null,
+      length: length || null,
       imageKeyword: usedKeyword,
       imageUrl: url,
       textPosition: card?.textPosition ?? "bottom",
@@ -49,16 +55,16 @@ export default function App() {
   }
 
   async function handleWriteOwn(text) {
-    await buildCard({ text, source: "client", topic: null });
+    await buildCard({ text, source: "client", topic: null, length: null });
   }
 
-  async function handleGenerate(topic) {
+  async function handleGenerate(topic, length) {
     setGenerating(true);
     try {
       const history = getQuoteHistory();
       const recentTexts = history.slice(0, 30).map((q) => q.text);
-      const result = await generateQuote({ topic: topic || null, recentTexts });
-      await buildCard({ text: result.text, source: "ai", topic: result.topic });
+      const result = await generateQuote({ topic: topic || null, length, recentTexts });
+      await buildCard({ text: result.text, source: "ai", topic: result.topic, length: result.length });
     } finally {
       setGenerating(false);
     }
@@ -70,8 +76,8 @@ export default function App() {
     try {
       const history = getQuoteHistory();
       const recentTexts = history.slice(0, 30).map((q) => q.text);
-      const result = await generateQuote({ topic: card.topic, recentTexts });
-      await buildCard({ text: result.text, source: "ai", topic: result.topic });
+      const result = await generateQuote({ topic: card.topic, length: card.length, recentTexts });
+      await buildCard({ text: result.text, source: "ai", topic: result.topic, length: result.length });
     } finally {
       setBusy(false);
     }

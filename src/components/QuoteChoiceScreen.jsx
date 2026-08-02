@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { PenLine, Sparkles } from "lucide-react";
 import Button from "./Button";
+import Chip from "./Chip";
+import { LENGTH_PRESETS, DEFAULT_LENGTH } from "../lib/quoteGenerator";
 
 function greeting() {
   const h = new Date().getHours();
@@ -13,6 +15,7 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
   const [mode, setMode] = useState(null); // null | 'write' | 'generate'
   const [text, setText] = useState("");
   const [topic, setTopic] = useState("");
+  const [length, setLength] = useState(DEFAULT_LENGTH);
 
   return (
     <div className="flex min-h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+180px)] pb-10 safe-bottom">
@@ -105,17 +108,34 @@ export default function QuoteChoiceScreen({ onWriteOwn, onGenerate, generating }
                   e.stopPropagation();
                   if (e.key === "Enter" && !generating) {
                     e.preventDefault();
-                    onGenerate(topic.trim());
+                    onGenerate(topic.trim(), length);
                   }
                 }}
                 placeholder="e.g. boundaries, burnout — or leave blank"
                 className="w-full rounded-2xl border border-teal-200 bg-paper p-4 text-[15px] text-teal-950 placeholder:text-teal-700/40 focus:border-teal-500 focus:outline-none"
               />
+
+              <div>
+                <p className="mb-2 text-xs font-medium text-teal-700/70">Length</p>
+                <div className="flex gap-2">
+                  {LENGTH_PRESETS.map((preset) => (
+                    <Chip
+                      key={preset.id}
+                      tint="nature"
+                      active={length === preset.id}
+                      onClick={() => setLength(preset.id)}
+                    >
+                      {preset.label}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+
               <Button
                 variant="primary"
                 className="w-full"
                 disabled={generating}
-                onClick={() => onGenerate(topic.trim())}
+                onClick={() => onGenerate(topic.trim(), length)}
               >
                 {generating ? "Writing something for you…" : "Generate"}
               </Button>
